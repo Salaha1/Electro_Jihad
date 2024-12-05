@@ -6,6 +6,7 @@
       <!-- Main Content -->
       <div class="content">
         <AdminPending />
+        <AdminBooking />
         <!-- Add other components or content here in the future -->
       </div>
     
@@ -14,6 +15,7 @@
 </template>
 
 <script>
+import AdminBooking from '../components/AdminBooking.vue';
 import AdminPending from '../components/AdminPending.vue';
 import FooterSection from '../components/FooterSection.vue';
 import NavBar from '../components/NavBar.vue';
@@ -23,6 +25,7 @@ export default {
   components: {
     NavBar,
     AdminPending,
+    AdminBooking,
     FooterSection,
   },
 };
