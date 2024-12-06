@@ -8,6 +8,9 @@ const session = require('express-session');
 const mongoose = require('mongoose');
 const symptomRoutes = require('./BLL/routes/symptomRoutes');
 const bookingRoutes = require('./BLL/routes/bookingRoutes');
+const carRoutes = require('./BLL/routes/carsForSaleRoutes');
+const carDetailsRoutes = require('./BLL/routes/carDetailsRoute');
+
 
 
 // Configure session middleware
@@ -51,6 +54,9 @@ mongoose.connect('mongodb+srv://salahatallah04:c2PESX3bc78a0DVN@cardiagnostics.p
 
 app.use('/api', symptomRoutes);
 app.use('/api',bookingRoutes);
+app.use('/api', carRoutes);
+app.use('/api', carDetailsRoutes);
+
 
 app.listen(5000, () => {
   console.log('Server is running on port 5000');

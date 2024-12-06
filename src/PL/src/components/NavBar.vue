@@ -15,6 +15,7 @@
       <ul :class="menuOpen ? 'nav-links open' : 'nav-links'">
         <li><router-link to="/" @click="closeMenu">Home</router-link></li>
         <li v-if="isAuthenticated"><router-link to="/services" @click="closeMenu">Services</router-link></li>
+        <li v-if="isAuthenticated"><router-link to="/car-dealer" @click="closeMenu">Car Dealer</router-link></li>
         <li><router-link to="/about" @click="closeMenu">About Us</router-link></li>
         <li v-if="isAuthenticated">
           <button class="footer-button" @click="logout">
