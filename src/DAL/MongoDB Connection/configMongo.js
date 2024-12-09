@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 
-const connectionString =
-  "mongodb+srv://salahatallah04:c2PESX3bc78a0DVN@cardiagnostics.pkjpl.mongodb.net/CarDiagnostics?retryWrites=true&w=majority";
+const connectionString = process.env.MONGO_CONNECT;
 
 mongoose.connect(connectionString)
   .then(() => console.log("Connected to MongoDB Atlas!"))

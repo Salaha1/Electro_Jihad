@@ -6,7 +6,7 @@ const db = require('../../DAL/MySQL Connection/config');
 
 // Function to verify reCAPTCHA
 async function verifyRecaptcha(recaptchaResponse) {
-  const secretKey = '6LfokpEqAAAAAK8YdKOR53FDTtXp6vZQ6bBTPOQO'; // Your secret key from Google reCAPTCHA
+  const secretKey = process.env.GOOGLE_RECAPTCHA_SECRET_KEY; // Your secret key from Google reCAPTCHA
   const url = `https://www.google.com/recaptcha/api/siteverify`;
 
   try {
