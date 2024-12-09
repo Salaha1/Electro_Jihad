@@ -3,7 +3,12 @@ import HomePage from './views/HomePage.vue';
 import SignINUP from './views/SignINUP.vue';
 import Services from './views/ServiceBooking.vue';
 import AdminPage from './views/AdminPage.vue';
+import CarDealer from './views/CarDealer.vue';
+import SellCar from './views/SellCarPage.vue';
+import BuyCar from './views/BuyCarPage.vue';
+import CarDetails from './views/CarDetailsPage.vue';
 import axios from 'axios';
+
 
 const routes = [
   { path: '/', name: 'Home', component: HomePage },
@@ -12,6 +17,30 @@ const routes = [
     path: '/services', 
     name: 'Services', 
     component: Services, 
+    meta: { requiresAuth: true }, 
+  },
+  { 
+    path: '/car-dealer', 
+    name: 'Car Dealer', 
+    component: CarDealer, 
+    meta: { requiresAuth: true }, 
+  },
+  { 
+    path: '/buy-car', 
+    name: 'BuyCarPage', 
+    component: BuyCar, 
+    meta: { requiresAuth: true }, 
+  },
+  { 
+    path: '/car-details/:id', 
+    name: 'CarDetailsPage', 
+    component: CarDetails, 
+    meta: { requiresAuth: true }, 
+  },
+  { 
+    path: '/sell-car', 
+    name: 'SellCarPage', 
+    component: SellCar, 
     meta: { requiresAuth: true }, 
   },
   { path: '/auth', name: 'SignInUp', component: SignINUP },

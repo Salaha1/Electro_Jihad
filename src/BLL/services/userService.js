@@ -2,7 +2,7 @@ const { getUserByEmail, createUser } = require('../../DAL/models/Customers');
 const axios = require('axios');
 const { sendVerificationEmail } = require('../services/emailService');
 const crypto = require('crypto');
-const db = require('../../DAL/config');
+const db = require('../../DAL/MySQL Connection/config');
 
 // Function to verify reCAPTCHA
 async function verifyRecaptcha(recaptchaResponse) {
@@ -75,7 +75,7 @@ async function signUp(req) {
 }
 async function signIn(req) {
   const { email, password } = req.body;
-
+console.log(req.body);
   if (!email || !password) {
     return { error: 'Email and password are required' };
   }

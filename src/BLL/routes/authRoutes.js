@@ -21,7 +21,7 @@ router.get('/check', isAuthenticated, (req, res) => {
 // Sign In Route
 router.post('/signin', async (req, res) => {
   const response = await signIn(req);  // Remove res from the signIn call
-  
+  console.log(response);
   if (response.error) {
     return res.status(401).json({ error: response.error });  // Return error if sign-in failed
   }

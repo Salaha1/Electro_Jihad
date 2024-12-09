@@ -41,6 +41,7 @@
           <option v-for="slot in availableTimeSlots" :key="slot" :value="slot">
             {{ slot }}
           </option>
+          <option v-if="availableTimeSlots.length === 0" disabled>No available time slots</option>
         </select>
         <small v-if="errors.timeSlot" class="error-message">{{ errors.timeSlot }}</small>
       </div>
@@ -55,18 +56,18 @@
 </template>
 
 <script>
-import axios from "axios";
-import Pikaday from "pikaday";
+import axios from 'axios';
+import Pikaday from 'pikaday';
 
 export default {
   data() {
     return {
       services: [], // List of available services
       selectedService: null,
-      customService: "",
+      customService: '',
       selectedDate: null,
       selectedTimeSlot: null,
-      unavailableDates: [], // List of fully booked dates
+      unavailableDates: [], // List of unavailable dates
       unavailableTimeSlots: {}, // Object with date as key and unavailable slots as values
       availableTimeSlots: [], // Time slots filtered for the selected date
       errors: {}, // Error messages for form validation
@@ -74,94 +75,105 @@ export default {
   },
   mounted() {
     this.fetchServices();
-    this.fetchUnavailableDates();
+    this.fetchUnavailableDates(); // Fetch unavailable dates when the component is mounted
     this.initializeDatePicker();
   },
   methods: {
     // Fetch available services
     async fetchServices() {
       try {
-        const response = await axios.get("/api/book");
+        const response = await axios.get('/api/book');
         this.services = response.data;
       } catch (error) {
-        console.error("Error fetching services:", error);
+        console.error('Error fetching services:', error);
       }
     },
-    // Fetch unavailable dates and times
+
+    // Fetch unavailable dates and time slots
     async fetchUnavailableDates() {
       try {
-        const response = await axios.get("/api/bookings/unavailable");
+        const response = await axios.get('/api/bookings/unavailable');
         this.unavailableDates = response.data.dates;
         this.unavailableTimeSlots = response.data.timeSlots;
       } catch (error) {
-        console.error("Error fetching unavailable dates:", error);
+        console.error('Error fetching unavailable dates:', error);
       }
     },
+
     // Initialize Pikaday date picker
     initializeDatePicker() {
       const self = this;
       new Pikaday({
         field: this.$refs.datepicker,
-        format: "YYYY-MM-DD",
-        theme: "light-theme",
+        format: 'YYYY-MM-DD',
+        theme: 'dark-theme',
         disableDayFn(date) {
-          const dateString = date.toISOString().split("T")[0];
+          const dateString = date.toISOString().split('T')[0];
           return self.unavailableDates.includes(dateString); // Disable unavailable dates
         },
         onSelect(date) {
-          const selected = date.toISOString().split("T")[0];
+          const selected = date.toISOString().split('T')[0];
           self.selectedDate = selected;
           self.updateAvailableTimeSlots(selected);
         },
       });
     },
+
     // Update available time slots based on the selected date
     updateAvailableTimeSlots(date) {
       const unavailableSlots = this.unavailableTimeSlots[date] || [];
       const allSlots = [
-        "9:00 AM",
-        "10:00 AM",
-        "11:00 AM",
-        "12:00 PM",
-        "1:00 PM",
-        "2:00 PM",
-        "3:00 PM",
-        "4:00 PM",
+        '9:00 AM',
+        '10:00 AM',
+        '11:00 AM',
+        '12:00 PM',
+        '1:00 PM',
+        '2:00 PM',
+        '3:00 PM',
+        '4:00 PM',
       ];
-      this.availableTimeSlots = allSlots.filter((slot) => !unavailableSlots.includes(slot));
+      this.availableTimeSlots = allSlots.filter((slot) => !unavailableSlots.includes(slot) && slot !== null);
     },
+
     // Validate the booking form
     validateForm() {
       this.errors = {};
-      if (!this.selectedService) this.errors.service = "Please select a service.";
-      if (!this.selectedDate) this.errors.date = "Please select a date.";
-      if (!this.selectedTimeSlot) this.errors.timeSlot = "Please select a time slot.";
+      if (!this.selectedService) this.errors.service = 'Please select a service.';
+      if (!this.selectedDate) this.errors.date = 'Please select a date.';
+      if (!this.selectedTimeSlot) this.errors.timeSlot = 'Please select a time slot.';
       return Object.keys(this.errors).length === 0;
     },
+
     // Book a service
     async bookService() {
       if (!this.validateForm()) return;
 
       const payload = {
-        serviceTitle: this.selectedService === "custom" ? null : this.selectedService,
-        customTitle: this.selectedService === "custom" ? this.customService : null,
+        serviceTitle: this.selectedService === 'custom' ? null : this.selectedService,
+        customTitle: this.selectedService === 'custom' ? this.customService : null,
         date: this.selectedDate,
         timeSlot: this.selectedTimeSlot,
       };
 
       try {
-        await axios.post("/api/booking", payload, { withCredentials: true });
-        alert("Booking confirmed!");
+        await axios.post('/api/booking', payload, { withCredentials: true });
+        alert('Booking confirmed!');
         this.resetForm();
       } catch (error) {
-        console.error("Error creating booking:", error);
-        this.errors.general = "Failed to book. Please try again.";
+        console.error('Error creating booking:', error);
+
+        if (error.response && error.response.data && error.response.data.message) {
+          this.errors.general = error.response.data.message;
+        } else {
+          this.errors.general = 'Failed to book. Please try again.';
+        }
       }
     },
+
     // Reset form after successful booking
     resetForm() {
       this.selectedService = null;
-      this.customService = "";
+      this.customService = '';
       this.selectedDate = null;
       this.selectedTimeSlot = null;
       this.availableTimeSlots = [];
@@ -171,7 +183,7 @@ export default {
 </script>
 
 <style>
-@import "~pikaday/css/pikaday.css";
+@import '~pikaday/css/pikaday.css';
 
 /* Calendar Theme */
 .light-theme .pika-single {
@@ -224,53 +236,8 @@ export default {
   gap: 0.5rem;
 }
 
-label {
-  font-weight: bold;
-  color: #555;
-}
-
-input,
-select {
-  padding: 0.7rem;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  transition: border-color 0.3s;
-}
-
-.calendar-input {
-  background-color: #f9f9f9;
-  cursor: pointer;
-}
-
-input:focus,
-select:focus {
-  border-color: #007bff;
-  outline: none;
-}
-
-.btn {
-  padding: 0.7rem;
-  font-size: 1rem;
-  font-weight: bold;
-  color: #fff;
-  background-color: #007bff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s;
-}
-
-.btn:hover {
-  background-color: #0056b3;
-}
-
-.btn:active {
-  background-color: #004085;
-}
 .error-message {
-  color: red;
-  font-size: 0.9rem;
-  margin-top: 0.5rem;
+  color: #d9534f;
+  font-size: 0.875rem;
 }
 </style>

@@ -8,11 +8,14 @@ const session = require('express-session');
 const mongoose = require('mongoose');
 const symptomRoutes = require('./BLL/routes/symptomRoutes');
 const bookingRoutes = require('./BLL/routes/bookingRoutes');
+const carRoutes = require('./BLL/routes/carsForSaleRoute');
+const carDetailsRoutes = require('./BLL/routes/carDetailsRoute');
+require('dotenv').config();
 
 
 // Configure session middleware
 app.use(session({
-  secret: '12345',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
   cookie: {
@@ -44,13 +47,16 @@ app.use(express.static(vueAppPath));
 // Authentication routes
 app.use('/api/auth', auth);  // Prefix your routes with /api/auth
 
-mongoose.connect('mongodb+srv://salahatallah04:c2PESX3bc78a0DVN@cardiagnostics.pkjpl.mongodb.net/CarDiagnostics?retryWrites=true&w=majority', {
+mongoose.connect(process.env.MONGO_CONNECT, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
 
 app.use('/api', symptomRoutes);
 app.use('/api',bookingRoutes);
+app.use('/api', carRoutes);
+app.use('/api', carDetailsRoutes);
+
 
 app.listen(5000, () => {
   console.log('Server is running on port 5000');
