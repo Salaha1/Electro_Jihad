@@ -248,17 +248,21 @@ h3 {
   text-align: center;
   font-family: Arial, sans-serif;
   color: #333;
+ 
 }
 .car-selection {
   display: flex;
   justify-content: space-between;  /* Ensures equal spacing */
   margin-bottom: 20px;
+  
+ 
 }
 
 .car-search {
   width: 48%;  /* Adjust width to allow space between the sections */
   display: flex;
   flex-direction: column;
+  margin-top: 20px;
 }
 
 .search-box {

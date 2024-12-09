@@ -30,7 +30,9 @@
 </template>
 
 <script>
+
 export default {
+  
   data() {
     return {
       showSignIn: true,
@@ -47,7 +49,7 @@ export default {
         recaptchaResponse: "",
       },
       errorMessage: "",
-      recaptchaSiteKey: process.env.GOOGLE_RECAPTCHA_SECRET_KEY, // Your reCAPTCHA site key here
+      recaptchaSiteKey: '6LfokpEqAAAAALFvIVfiqQ-qvwh44yvaJDywLuZL', // Your reCAPTCHA site key here
       recaptchaLoaded: false,  // Flag to track script load status
       recaptchaRendered: false, // Flag to track reCAPTCHA render status
     };
